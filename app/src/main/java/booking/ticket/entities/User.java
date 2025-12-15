@@ -1,5 +1,7 @@
 package booking.ticket.entities;
 
+import java.util.List;
+
 public class User {
 
     private String name;
