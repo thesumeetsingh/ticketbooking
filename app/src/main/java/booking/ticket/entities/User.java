@@ -13,4 +13,53 @@ public class User {
     private String userId;
 
     private List<Ticket> ticketsBooked;
+
+    public User(String name, String password, String hashedPassword, List<Ticket> ticketsBooked, String userId){
+        this.name=name;
+        this.password=password;
+        this.hashedPassword=hashedPassword;
+        this.userId=userId;
+        this.ticketsBooked=ticketsBooked;
+    }
+
+    public User(){}
+
+    public String getName(){
+        return name;
+    }
+
+    public String getPassword(){
+        return password;
+    }
+
+    public String getHashedPassword(){
+        return hashedPassword;
+    }
+
+    public List<Ticket> getTicketsBooked(){
+        return ticketsBooked;
+    }
+
+    public void printTicket(){
+        for(int i=0;i<ticketsBooked.size();i++){
+            System.out.println(ticketsBooked.get(i).getTicketInfo());
+        }
+    }
+
+    public String getUserId(){
+        return userId;
+    }
+
+    //setters
+    public void setHashedPassword(String hashedPassword){
+        this.hashedPassword=hashedPassword;
+    }
+
+    public void setTicketsBooked(List<Ticket> ticketsBooked){
+        this.ticketsBooked=ticketsBooked;
+    }
+
+    public void setUserId(String userId){
+        this.userId=userId;
+    }
 }
