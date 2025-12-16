@@ -3,12 +3,108 @@
  */
 package booking.ticket;
 
-public class App {
-    public String getGreeting() {
-        return "Hello World!";
-    }
+import booking.ticket.entities.Ticket;
+import booking.ticket.entities.Train;
+import booking.ticket.entities.User;
+import booking.ticket.services.TrainService;
+import booking.ticket.services.UserBookingService;
+import booking.ticket.util.UserServiceUtil;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+import java.util.UUID;
+
+public class App {
+
+    public static void printOptions(){
+        System.out.println("Choose option:");
+        System.out.println("    1. SignUp");
+        System.out.println("    2. Login");
+        System.out.println("    3. Fetch Booking");
+        System.out.println("    4. Search Trains");
+        System.out.println("    5. Book a Train");
+        System.out.println("    6. Cancel my Booking");
+        System.out.println("    7. Exit Application");
+
+    }
     public static void main(String[] args) {
-        System.out.println(new App().getGreeting());
+
+        Scanner scanner =new Scanner(System.in);
+
+        System.out.println("TICKET BOOKING SYSTEM");
+        int opt=0;
+
+        UserBookingService userBookingService;
+        try{
+            userBookingService= new UserBookingService();
+        }catch(IOException ex){
+            System.out.println("something went wrong while creating userService Obj... TRY AGAIN!");
+            System.out.println(ex.toString());
+            return;
+        }
+
+        while(opt!=7){
+            printOptions();
+            opt=scanner.nextInt();
+             switch(opt){
+                 case 1:
+                     System.out.println("enter username");
+                     String nameToSignUp=scanner.next();
+                     System.out.println("enter password");
+                     String passwordToSignUp=scanner.next();
+
+                     User signupUser=new User(
+                             nameToSignUp,
+                             passwordToSignUp,
+                             UserServiceUtil.hashedPassword(passwordToSignUp),
+                             new ArrayList<>(),
+                             UUID.randomUUID().toString());
+                     userBookingService.signUp(signupUser);
+                     break;
+                 case 2:
+                     System.out.println("enter username: ");
+                     String nameToLogin=scanner.next();
+                     System.out.println("enter password: ");
+                     String passwordToLogin=scanner.next();
+                     User loginUser=new User(
+                             nameToLogin,
+                             passwordToLogin,
+                             UserServiceUtil.hashedPassword(passwordToLogin),
+                             new ArrayList<>(),
+                             UUID.randomUUID().toString());
+                     try{
+                         userBookingService = new UserBookingService(loginUser);
+                     }catch(IOException ex){
+                         System.out.println("cannot login... Try Again");
+                     }
+                     break;
+                 case 3:
+                     System.out.println("Fetching your bookings...");
+                     userBookingService.fetchBooking();
+                     break;
+                 case 4:
+                     System.out.println("enter source station: ");
+                     String source=scanner.next();
+                     System.out.println("enter destination station: ");
+                     String destination=scanner.next();
+                     try{
+                         TrainService trainService=new TrainService();
+                         List<Train> trainList= trainService.searchTrain(source, destination);
+                         for(Train train: trainList){
+                             System.out.println(train);
+                         }
+                     }catch(IOException ex){
+                         System.out.println("error searching train...");
+                     }
+
+                     break;
+             }
+        }
+
+
+
+
     }
 }
