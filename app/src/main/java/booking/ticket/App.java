@@ -26,7 +26,8 @@ public class App {
         System.out.println("    4. Search Trains");
         System.out.println("    5. Book a Train");
         System.out.println("    6. Cancel my Booking");
-        System.out.println("    7. Exit Application");
+        System.out.println("    7. view system status(logged in user and details)");
+        System.out.println("    0. Exit Application");
 
     }
     public static void main(String[] args) {
@@ -34,18 +35,20 @@ public class App {
         Scanner scanner =new Scanner(System.in);
 
         System.out.println("TICKET BOOKING SYSTEM");
-        int opt=0;
+        int opt=7;
 
         UserBookingService userBookingService;
         try{
             userBookingService= new UserBookingService();
         }catch(IOException ex){
             System.out.println("something went wrong while creating userService Obj... TRY AGAIN!");
+
+
             System.out.println(ex.toString());
             return;
         }
 
-        while(opt!=7){
+        while(opt!=0){
             printOptions();
             opt=scanner.nextInt();
              switch(opt){
@@ -74,10 +77,13 @@ public class App {
                              UserServiceUtil.hashedPassword(passwordToLogin),
                              new ArrayList<>(),
                              UUID.randomUUID().toString());
-                     try{
-                         userBookingService = new UserBookingService(loginUser);
-                     }catch(IOException ex){
-                         System.out.println("cannot login... Try Again");
+                     boolean checkLogin= userBookingService.logIn(nameToLogin, passwordToLogin);
+                     if(checkLogin){
+                         System.out.println("LOGIN SUCCESSFUL");
+                         System.out.println("username: "+userBookingService.getUserName());
+                         System.out.println(("user ID: "+userBookingService.getUserId()));
+                     }else{
+                         System.out.println("Incorrect username or password. TRY AGAIN...");
                      }
                      break;
                  case 3:
@@ -93,13 +99,15 @@ public class App {
                          TrainService trainService=new TrainService();
                          List<Train> trainList= trainService.searchTrain(source, destination);
                          for(Train train: trainList){
-                             System.out.println(train);
+                             System.out.printf("Train Number %s runs from %s to %s%n", train.getTrainNo(), source, destination);
                          }
                      }catch(IOException ex){
                          System.out.println("error searching train...");
                      }
-
                      break;
+                 case 7:
+                     System.out.println("username: "+userBookingService.getUserName());
+                     System.out.println("user id: "+userBookingService.getUserId());
              }
         }
 
